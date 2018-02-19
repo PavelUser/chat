@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 
 public class frame extends JFrame {
     frame(){
-        super("Chat");
+        super("Chat server");
         setExtendedState(1);
 
         setVisible(true);

@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.frame;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,6 +14,7 @@ public class Main {
     static boolean bool=true;
 
     public static void main(String[] args) throws IOException{
+        new frame();
         int port=2000;
         String str=null;
         InetAddress ipadress=InetAddress.getLocalHost();
@@ -19,11 +22,11 @@ public class Main {
 
         ServerSocket serverSocket=new ServerSocket(port);
 
-        // Socket socket=serverSocket.accept();
+       // Socket socket=serverSocket.accept();
         System.out.println("Ждём подключения");
 
-        // DataInputStream instream=new DataInputStream(socket.getInputStream());
-        // DataOutputStream outstream=new DataOutputStream(socket.getOutputStream());
+       // DataInputStream instream=new DataInputStream(socket.getInputStream());
+       // DataOutputStream outstream=new DataOutputStream(socket.getOutputStream());
         new Thread() {
             private boolean running=true;
 
@@ -34,7 +37,7 @@ public class Main {
 
                 do{
                     if (scanner.nextInt()==1)
-                        running=false;
+                    running=false;
                 }while (running);
 
                 bool = false;
@@ -45,7 +48,7 @@ public class Main {
         while (bool){
 
             //temp--------------------------------------------
-            writer.write(str);
+          // writer.write(str);
             //temp--------------------------------------------
            /* System.out.println("ждем сообщение от клиента"
                                 +"\nПрислали строку: "+str);
@@ -56,6 +59,6 @@ public class Main {
             System.out.println("Отправлена строка: "+str+"\n");     */
         }
         // socket.close();
-        serverSocket.close();
+	serverSocket.close();
     }
 }
