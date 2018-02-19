@@ -1,16 +1,13 @@
-package com.company;
+package com.company.server;
 
-import com.company.frame;
+import com.company.GUI.frame;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Scanner;
 
-public class Main {
+public class serverChat {
     static boolean bool=true;
 
     public static void main(String[] args) throws IOException{
