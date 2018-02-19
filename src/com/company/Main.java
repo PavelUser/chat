@@ -1,4 +1,4 @@
-﻿package com.company;
+package com.company;
 
 import com.company.frame;
 
