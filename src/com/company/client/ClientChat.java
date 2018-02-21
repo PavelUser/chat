@@ -19,10 +19,7 @@ public class ClientChat{
         System.out.print("Введите ip сервера: ");
         String ip=scanner.nextLine();
 
-        Socket socket = null;
-
-        try {
-            socket = new Socket(ip, port);
+        try (Socket socket = new Socket(ip, port)){
 
             System.out.println("соединение с сервером установлено");
 
@@ -46,16 +43,8 @@ public class ClientChat{
             e.printStackTrace();
         } catch (IOException e) {
             System.out.println("Ошибка I/O: " + e.getMessage());
-        } finally {
-            if (socket != null) {
-
-                try {
-                    socket.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
         }
+
     }
 
 }

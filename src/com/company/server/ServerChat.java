@@ -13,9 +13,9 @@ public class ServerChat {
     static boolean work=true;
 
     public static void main(String[] args){
-        InetAddress inetAddress=null;
+
         int port=2000;
-        String str=null;
+        InetAddress inetAddress=null;
 
         try {
             inetAddress = InetAddress.getLocalHost();
@@ -23,13 +23,13 @@ public class ServerChat {
             host.printStackTrace();
         }
 
-        Socket socket=null;
+        System.out.println("ip adress(getLocalHost): " + inetAddress
+                            +"\nЖдём подключения клиента");
 
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("ip adress(getLocalHost): " + inetAddress);
+        try (ServerSocket serverSocket = new ServerSocket(port);
+             Socket socket = serverSocket.accept()) {
 
-            System.out.println("Для выключения сервера введите 1"+"\nЖдём подключения клиента");
-            socket = serverSocket.accept();
+            System.out.println("Соединение с клиентом установлено");
 
             DataInputStream instream = new DataInputStream(socket.getInputStream());
             DataOutputStream outstream = new DataOutputStream(socket.getOutputStream());
@@ -49,6 +49,9 @@ public class ServerChat {
                     work = false;
                 }
             }.start();
+            String str;
+
+            System.out.println("Для выключения сервера введите 1");
 
             while (work) {
 
@@ -64,15 +67,8 @@ public class ServerChat {
             socket.close();
         }catch (IOException io){
             io.printStackTrace();
-        }finally {
-            if (socket!=null){
-                try {
-                    socket.close();
-                    System.out.println("Сервер выключен");
-                }catch (IOException ex){
-                    ex.printStackTrace();
-                }
-            }
         }
+
+        System.out.println("Сервер выключен");
     }
 }
