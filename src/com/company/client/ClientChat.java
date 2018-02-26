@@ -21,7 +21,8 @@ public class ClientChat{
 
         try (Socket socket = new Socket(ip, port)){
 
-            System.out.println("соединение с сервером установлено");
+            System.out.println("Соединение с сервером установлено"
+                    +"\nВведите сообщение");
 
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
@@ -42,10 +43,8 @@ public class ClientChat{
 
                         calendar=Calendar.getInstance();                        //Получаем время доставки
 
-                        System.out.println(calendar.get(Calendar.HOUR)+":"      //Печать времени и сообщения (не нравится печать секунд и минут)
-                                +calendar.get(Calendar.MINUTE)+":"
-                                +calendar.get(Calendar.SECOND)
-                                +"\tОтвет сервера: " + line+"\n");
+                        System.out.printf("\n\t\t%tT \n%s", calendar,           //Печать времени и сообщения
+                                "Ответ сервера: " + line+"\n");
                     }
                 }
             };
@@ -56,17 +55,12 @@ public class ClientChat{
             Calendar calendar;
 
             while (true) {
-                System.out.println("Введите сообщение: ");
                 line = scanner.nextLine();
+                calendar=Calendar.getInstance();                                //Получаем время отправки
                 dataOutputStream.writeUTF(line);                                //передача сообщения серверу
 
-                calendar=Calendar.getInstance();                                //Получаем время отправки
-
-                System.out.println(calendar.get(Calendar.HOUR)+":"              //Печать времени и сообщения (не нравится печать секунд и минут)
-                        +calendar.get(Calendar.MINUTE)+":"
-                        +calendar.get(Calendar.SECOND)
-                        +"\tОтправлена строка: " + line
-                        + "\nОжидаем ответа от сервера");
+                System.out.printf("\t\t%tT \n%s", calendar,
+                        "Отправлена строка: " + line);
             }
 
         } catch (UnknownHostException e) {
