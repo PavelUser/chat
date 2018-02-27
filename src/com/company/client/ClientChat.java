@@ -25,7 +25,7 @@ public class ClientChat{
                     +"\nВведите сообщение");
 
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+            final DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 
             Thread thread=new Thread(){                                         //Поток обработки входящего сообщения
                 private String line;
