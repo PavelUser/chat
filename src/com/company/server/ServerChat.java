@@ -1,5 +1,7 @@
 package com.company.server;
 
+import org.apache.log4j.Logger;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class ServerChat {
+    private static final Logger log = Logger.getLogger(ServerChat.class);
+
     static boolean work=true;
 
     public static void main(String[] args){
@@ -22,9 +26,11 @@ public class ServerChat {
         }catch (UnknownHostException host){
             host.printStackTrace();
         }
-
+                /*
         System.out.println("ip adress(getLocalHost): " + inetAddress
-                            +"\nЖдём подключения клиента");
+                            +"\nЖдём подключения клиента");*/
+        log.info("ip adress(getLocalHost): " + inetAddress
+                +"\nЖдём подключения клиента");
 
         try (ServerSocket serverSocket = new ServerSocket(port);
              Socket socket = serverSocket.accept()) {
