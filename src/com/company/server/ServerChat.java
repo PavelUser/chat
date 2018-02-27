@@ -18,7 +18,7 @@ public class ServerChat {
 
     public static void main(String[] args){
 
-        int port=2000;
+        final int port=2000;
         InetAddress inetAddress=null;
 
         try {
@@ -26,16 +26,14 @@ public class ServerChat {
         }catch (UnknownHostException host){
             host.printStackTrace();
         }
-                /*
-        System.out.println("ip adress(getLocalHost): " + inetAddress
-                            +"\nЖдём подключения клиента");*/
+
         log.info("ip adress(getLocalHost): " + inetAddress
                 +"\nЖдём подключения клиента");
 
         try (ServerSocket serverSocket = new ServerSocket(port);
              Socket socket = serverSocket.accept()) {
 
-            System.out.println("Соединение с клиентом установлено");
+            log.info("\nСоединение с клиентом установлено\n");
 
             DataInputStream instream = new DataInputStream(socket.getInputStream());
             DataOutputStream outstream = new DataOutputStream(socket.getOutputStream());
@@ -57,17 +55,17 @@ public class ServerChat {
             }.start();
             String str;
 
-            System.out.println("Для выключения сервера введите 1");
+            log.info("Для выключения сервера введите 1\n");
 
             while (work) {
 
-                System.out.println("ждем сообщение от клиента");
+                log.info("ждем сообщение от клиента\n");
                 str = instream.readUTF();
-                System.out.println("Прислали строку: " + str);
-                System.out.println("Отпровляем обратно");
+                log.info("Прислали строку: " + str+"\n");
+                log.info("Отпровляем обратно\n");
                 outstream.writeUTF(str);
                 outstream.flush();
-                System.out.println("Отправлена строка: " + str + "\n");
+                log.info("Отправлена строка: " + str + "\n\n");
             }
 
             socket.close();
@@ -75,6 +73,6 @@ public class ServerChat {
             io.printStackTrace();
         }
 
-        System.out.println("Сервер выключен");
+        log.info("Сервер выключен");
     }
 }

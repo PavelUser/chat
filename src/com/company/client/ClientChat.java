@@ -1,5 +1,7 @@
 package com.company.client;
 
+import org.apache.log4j.Logger;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,20 +11,21 @@ import java.util.Calendar;
 import java.util.Scanner;
 
 public class ClientChat{
+    static final Logger log=Logger.getLogger(ClientChat.class);
 
     public static void main(String args[]) {
-        int port = 2000;
+        final int port = 2000;
 
-        System.out.println("Клиент запущен");
+        log.info("Клиент запущен\n");
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Введите ip сервера: ");
+        log.info("Введите ip сервера: ");
         String ip=scanner.nextLine();                                           //Переменная для чтения строки, ввденной с клавиатуры
 
         try (Socket socket = new Socket(ip, port)){
 
-            System.out.println("Соединение с сервером установлено"
-                    +"\nВведите сообщение");
+            log.info("Соединение с сервером установлено"
+                    +"\nВведите сообщение\n");
 
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             final DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
@@ -38,7 +41,7 @@ public class ClientChat{
                         try {
                             line = dataInputStream.readUTF();                   //прием сообщения от сервера
                         }catch (IOException ex){
-                            System.out.println("Сообщение не может быть прочитано");
+                            log.info("Сообщение не может быть прочитано\n");
                         }
 
                         calendar=Calendar.getInstance();                        //Получаем время доставки
@@ -66,7 +69,7 @@ public class ClientChat{
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("Ошибка I/O: " + e.getMessage());
+            log.info("Ошибка I/O: " + e.getMessage()+"\n");
         }
 
     }
