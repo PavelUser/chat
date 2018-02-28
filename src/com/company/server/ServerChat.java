@@ -62,7 +62,7 @@ public class ServerChat {
             log.info("Соединение с клиентом установлено\n");
 
             initDataStream(socket);
-            keyboardHendler();
+            keyboardHandler();
 
             log.info("Для выключения сервера введите 1\n\n");
             String str=null;
@@ -78,7 +78,7 @@ public class ServerChat {
             log.info("Сервер выключен\n");
     }
 
-    private void keyboardHendler(){
+    private void keyboardHandler(){
 
         new Thread() {
             private boolean running = true;

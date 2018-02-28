@@ -27,7 +27,7 @@ public class ClientChat{
                     +"\nВведите сообщение\n");
 
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            final DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 
             Thread thread=new Thread(){                                         //Поток обработки входящего сообщения
                 private String line;
@@ -35,6 +35,7 @@ public class ClientChat{
 
                 @Override
                 public void run() {
+
                     try {
 
                         while (true){
