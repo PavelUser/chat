@@ -22,6 +22,32 @@
         </layout>
     </appender>
 
+    <appender name="appenderA" class="org.apache.log4j.FileAppender">
+        <param name="File" value="a.log"/>
+        <param name="append" value="false" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss}{Minks/Europe}   %-5p [%t] %c: %m%n"/>
+        </layout>
+    </appender>
+
+   <appender name="appenderTest" class="org.apache.log4j.FileAppender">
+        <param name="File" value="test.log"/>
+       <param name="append" value="false" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss}{Minks/Europe}   %-5p [%t] %c: %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="com.company.test" additivity="true">
+        <level value="info"/>
+        <appender-ref ref="appenderTest"/>
+    </logger>
+
+    <logger name="com.company.test.a.ClassA" additivity="true">
+        <level value="info"/>
+        <appender-ref ref="appenderA"/>
+    </logger>
+
     <root>
         <priority value="INFO"/>
         <appender-ref ref="console" />
