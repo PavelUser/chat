@@ -14,60 +14,32 @@ import java.util.Scanner;
 public class ClientChat{
     static final Logger log=Logger.getLogger(ClientChat.class);
 
+    private final int port = 2000;
+    private DataOutputStream dataOutputStream;
+    private DataInputStream dataInputStream;
+    private Scanner scanner=new Scanner(System.in);
+    private String line=null;
+    private Calendar calendar=null;
+
     public static void main(String args[]) {
-        final int port = 2000;
+
+        new ClientChat().startWork();
+    }
+
+    private void startWork(){
+
         log.info("Клиент запущен\n");
-
-        Scanner scanner = new Scanner(System.in);
         log.info("Введите ip сервера: ");
-        String ip=scanner.nextLine();                                           //Переменная для чтения строки, ввденной с клавиатуры
 
-        try (Socket socket = new Socket(ip, port)){
+        try (Socket socket = new Socket(enterIP(), port)){
             log.info("Соединение с сервером установлено"
                     +"\nВведите сообщение\n");
 
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-
-            Thread thread=new Thread(){                                         //Поток обработки входящего сообщения
-                private String line;
-                private Calendar calendar;
-
-                @Override
-                public void run() {
-
-                    try {
-
-                        while (true){
-                            line = dataInputStream.readUTF();                   //прием сообщения от сервера
-
-                        calendar=Calendar.getInstance();                        //Получаем время доставки
-
-                        System.out.printf("\n\t\t%tT \n%s", calendar,           //Печать времени и сообщения
-                                "Ответ сервера: " + line+"\n");
-                    }
-
-                    } catch (EOFException ex){
-                        log.error("Соединение с сервером потеряно\n", ex);
-                        System.exit(1);
-                    } catch (IOException ex){
-                        log.error("Сообщение не может быть прочитано\n", ex);
-                    }
-                }
-            };
-            thread.setDaemon(true);
-            thread.start();
-
-            String line;
-            Calendar calendar;
+            initDataStream(socket);
+            inputMsgHandler(dataInputStream);
 
             while (true) {
-                line = scanner.nextLine();
-                calendar=Calendar.getInstance();                                //Получаем время отправки
-                dataOutputStream.writeUTF(line);                                //передача сообщения серверу
-
-                System.out.printf("\t\t%tT \n%s", calendar,
-                        "Отправлена строка: " + line);
+                sendMsg(line,calendar);
             }
 
         } catch (UnknownHostException e) {
@@ -75,7 +47,59 @@ public class ClientChat{
         } catch (IOException e) {
             log.error("Ошибка I/O: ", e);
         }
+    }
 
+    private String enterIP(){
+
+        return scanner.nextLine();                                           //Переменная для чтения строки, ввденной с клавиатуры
+    }
+
+    private void initDataStream(Socket socket) throws IOException {
+
+        dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        dataInputStream = new DataInputStream(socket.getInputStream());
+    }
+
+    private void inputMsgHandler(DataInputStream dataInputStream){
+
+        Thread thread=new Thread(){                                         //Поток обработки входящего сообщения
+            private String line;
+            private Calendar calendar;
+
+            @Override
+            public void run() {
+
+                try {
+
+                    while (true){
+                        line = dataInputStream.readUTF();                   //прием сообщения от сервера
+
+                        calendar=Calendar.getInstance();                        //Получаем время доставки
+
+                        System.out.printf("\n\t\t%tT \n%s", calendar,           //Печать времени и сообщения
+                                "Ответ сервера: " + line+"\n");
+                    }
+
+                } catch (EOFException ex){
+                    log.error("Соединение с сервером потеряно\n", ex);
+                    System.exit(1);
+                } catch (IOException ex){
+                    log.error("Сообщение не может быть прочитано\n", ex);
+                }
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void sendMsg(String line, Calendar calendar) throws IOException {
+
+        line = scanner.nextLine();
+        calendar=Calendar.getInstance();                                //Получаем время отправки
+        dataOutputStream.writeUTF(line);                                //передача сообщения серверу
+
+        System.out.printf("\t\t%tT \n%s", calendar,
+                "Отправлена строка: " + line);
     }
 
 }
