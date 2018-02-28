@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -15,7 +16,7 @@ public class ClientChat{
 
     public static void main(String args[]) {
         final int port = 2000;
-
+        log.isInfoEnabled();
         log.info("Клиент запущен\n");
 
         Scanner scanner = new Scanner(System.in);
@@ -23,7 +24,6 @@ public class ClientChat{
         String ip=scanner.nextLine();                                           //Переменная для чтения строки, ввденной с клавиатуры
 
         try (Socket socket = new Socket(ip, port)){
-
             log.info("Соединение с сервером установлено"
                     +"\nВведите сообщение\n");
 
@@ -36,18 +36,22 @@ public class ClientChat{
 
                 @Override
                 public void run() {
-                    while (true){
+                    try {
 
-                        try {
+                        while (true){
                             line = dataInputStream.readUTF();                   //прием сообщения от сервера
-                        }catch (IOException ex){
-                            log.info("Сообщение не может быть прочитано\n");
-                        }
 
                         calendar=Calendar.getInstance();                        //Получаем время доставки
 
                         System.out.printf("\n\t\t%tT \n%s", calendar,           //Печать времени и сообщения
                                 "Ответ сервера: " + line+"\n");
+                    }
+
+                    } catch (EOFException ex){
+                        log.error("Соединение с сервером потеряно\n", ex);
+                        System.exit(1);
+                    } catch (IOException ex){
+                        log.error("Сообщение не может быть прочитано\n", ex);
                     }
                 }
             };
@@ -67,9 +71,9 @@ public class ClientChat{
             }
 
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            log.error("IP не установлен: ", e);
         } catch (IOException e) {
-            log.info("Ошибка I/O: " + e.getMessage()+"\n");
+            log.error("Ошибка I/O: ", e);
         }
 
     }

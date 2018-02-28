@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ServerChat {
@@ -27,15 +28,15 @@ public class ServerChat {
             host.printStackTrace();
         }
 
-        log.info("ip adress(getLocalHost): " + inetAddress
-                +"\nЖдём подключения клиента");
+        log.info("ip address(getLocalHost): " + inetAddress
+                +"\nЖдём подключения клиента\n");
 
         try (ServerSocket serverSocket = new ServerSocket(port);
              Socket socket = serverSocket.accept()) {
 
-            log.info("\nСоединение с клиентом установлено\n");
+            log.info("Соединение с клиентом установлено\n");
 
-            DataInputStream instream = new DataInputStream(socket.getInputStream());
+            DataInputStream inStream = new DataInputStream(socket.getInputStream());
             DataOutputStream outstream = new DataOutputStream(socket.getOutputStream());
 
             new Thread() {
@@ -55,12 +56,12 @@ public class ServerChat {
             }.start();
             String str;
 
-            log.info("Для выключения сервера введите 1\n");
+            log.info("Для выключения сервера введите 1\n\n");
 
             while (work) {
 
                 log.info("ждем сообщение от клиента\n");
-                str = instream.readUTF();
+                str = inStream.readUTF();
                 log.info("Прислали строку: " + str+"\n");
                 log.info("Отпровляем обратно\n");
                 outstream.writeUTF(str);
@@ -70,9 +71,9 @@ public class ServerChat {
 
             socket.close();
         }catch (IOException io){
-            io.printStackTrace();
+            log.error("I/O exception",io);
         }
 
-        log.info("Сервер выключен");
+        log.info("Сервер выключен\n");
     }
 }
