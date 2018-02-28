@@ -22,4 +22,8 @@
         <appender-ref ref="FileAppender"/>
     </root>
 
+    <logger name="com.company.server.ServerChat" additivity="false">
+
+    </logger>
+
 </log4j:configuration>

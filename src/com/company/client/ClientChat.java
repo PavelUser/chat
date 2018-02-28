@@ -16,7 +16,6 @@ public class ClientChat{
 
     public static void main(String args[]) {
         final int port = 2000;
-        log.isInfoEnabled();
         log.info("Клиент запущен\n");
 
         Scanner scanner = new Scanner(System.in);
