@@ -9,26 +9,27 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ServerChat {
     private final Logger log = Logger.getLogger(ServerChat.class);
 
-    DataInputStream inStream;
-    DataOutputStream outstream;
-    final int port=2000;
+    private DataInputStream inStream;
+    private DataOutputStream outstream;
+    final private int port=2000;
 
-    boolean work=true;
+    private boolean work=true;
 
     public static void main(String[] args){
 
         ServerChat serverChat=new ServerChat();
-        serverChat.getIP();
+        serverChat.showIP();
         serverChat.startWork();
 
     }
 
-    private void getIP(){
+    private void showIP(){
 
         try {
             log.info("ip address: "+InetAddress.getLocalHost().getHostAddress());
@@ -57,28 +58,36 @@ public class ServerChat {
     private void startWork() {
 
         try (ServerSocket serverSocket = new ServerSocket(port);
-             Socket socket = serverSocket.accept()) {
+             /*Socket socket = serverSocket.accept()*/) {
 
-            log.info("Соединение с клиентом установлено\n");
+            //log.info("Соединение с клиентом установлено\n");
 
-            initDataStream(socket);
+            //initDataStream(socket);
             keyboardHandler();
 
-            log.info("Для выключения сервера введите 1\n\n");
-            String str=null;
+            //Test
+            //----------------------------------------------------------------------------------------------------------
+            ConnectionHandler connectionHandler=new ConnectionHandler(serverSocket);
+            //----------------------------------------------------------------------------------------------------------
 
-            while (work) {
-                handleMsg(inStream,outstream,str);
+            //log.info("Для выключения сервера введите 1\n\n");
+            //String str=null;
+
+            /*do{
+                //handleMsg(inStream,outstream,str);
             }
-
+            while (work);*/
+            connectionHandler.join();
         }catch (IOException io){
             log.error("I/O exception",io);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-            log.info("Сервер выключен\n");
+        log.info("Сервер выключен\n");
     }
 
-    private void keyboardHandler(){
+    private void keyboardHandler(){     //Нужно будет создать отдельный класс
 
         new Thread() {
             private boolean running = true;
@@ -88,8 +97,9 @@ public class ServerChat {
                 Scanner scanner = new Scanner(System.in);
 
                 do {
-                    if (scanner.nextInt() == 1)
+                    if (scanner.nextInt() == 1) {
                         running = false;
+                    }
                 } while (running);
 
                 work = false;

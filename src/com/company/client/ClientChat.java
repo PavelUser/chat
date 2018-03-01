@@ -47,7 +47,7 @@ public class ClientChat{
         } catch (IOException e) {
             log.error("Ошибка I/O: ", e);
         }
-    }
+    }                                                   //отредактировать под новый код
 
     private String enterIP(){
 
@@ -58,7 +58,7 @@ public class ClientChat{
 
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataInputStream = new DataInputStream(socket.getInputStream());
-    }
+    }             //отредактировать под новый код
 
     private void inputMsgHandler(DataInputStream dataInputStream){
 
@@ -90,7 +90,7 @@ public class ClientChat{
         };
         thread.setDaemon(true);
         thread.start();
-    }
+    }              //отредактировать под новый код
 
     private void sendMsg(String line, Calendar calendar) throws IOException {
 
@@ -100,6 +100,6 @@ public class ClientChat{
 
         System.out.printf("\t\t%tT \n%s", calendar,
                 "Отправлена строка: " + line);
-    }
+    }   //отредактировать под новый код
 
 }
