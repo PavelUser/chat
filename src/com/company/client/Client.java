@@ -43,11 +43,9 @@ public class Client {
             }
         }
         if (inputHandler != null) {
-            inputHandler.interrupt();
             inputHandler = null;
         }
         if (outputHandler != null) {
-            outputHandler.interrupt();
             outputHandler = null;
         }
 
@@ -95,12 +93,6 @@ public class Client {
                 }
             }
         }
-
-        @Override
-        public void interrupt() {
-            super.interrupt();
-            log.info("Поток InputHandler остановлен");
-        }
     }
 
     private class OutputHandler extends Thread {
@@ -116,12 +108,6 @@ public class Client {
                     log.warn(e.getMessage(), e);
                 }
             }
-        }
-
-        @Override
-        public void interrupt() {
-            super.interrupt();
-            log.info("Поток OutputHandler остановлен");
         }
     }
 

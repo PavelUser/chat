@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -66,7 +65,6 @@ public class Server {
             }
         }
         if (inputHandler != null) {
-            inputHandler.interrupt();
             inputHandler = null;
         }
         if(input != null){
@@ -105,12 +103,6 @@ public class Server {
                     log.warn(e.getMessage(), e);
                 }
             }
-        }
-
-        @Override
-        public void interrupt() {
-            super.interrupt();
-            log.info("Поток InputHandler остановлен");
         }
 
         void handleMsg(String msg) {
