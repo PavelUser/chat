@@ -17,35 +17,36 @@
 
     <appender name="FileAppender" class="org.apache.log4j.FileAppender">
         <param name="File" value="Info.log"/>
+        <param name="append" value="false" />
         <layout class="org.apache.log4j.PatternLayout">
                 <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t]%c: %m"/>
         </layout>
     </appender>
 
-    <appender name="appenderA" class="org.apache.log4j.FileAppender">
-        <param name="File" value="a.log"/>
+    <appender name="ServerFileAppender" class="org.apache.log4j.FileAppender">
+        <param name="File" value="server.log"/>
         <param name="append" value="false" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss}{Minks/Europe}   %-5p [%t] %c: %m%n"/>
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t]%c: %m"/>
         </layout>
     </appender>
 
-   <appender name="appenderTest" class="org.apache.log4j.FileAppender">
-        <param name="File" value="test.log"/>
-       <param name="append" value="false" />
+    <appender name="ClientFileAppender" class="org.apache.log4j.FileAppender">
+        <param name="File" value="server.log"/>
+        <param name="append" value="false" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss}{Minks/Europe}   %-5p [%t] %c: %m%n"/>
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t]%c: %m"/>
         </layout>
     </appender>
 
-    <logger name="com.company.test" additivity="true">
+    <logger name="com.company.server" additivity="true">
         <level value="info"/>
-        <appender-ref ref="appenderTest"/>
+        <appender-ref ref="ServerFileAppender"/>
     </logger>
 
-    <logger name="com.company.test.a.ClassA" additivity="true">
+    <logger name="com.company.client" additivity="true">
         <level value="info"/>
-        <appender-ref ref="appenderA"/>
+        <appender-ref ref="ClientFileAppender"/>
     </logger>
 
     <root>
