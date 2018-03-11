@@ -37,7 +37,7 @@ public class ClientChat{
             inputMsgHandler(dataInputStream);
 
             while (true) {
-                sendMsg(line,calendar);
+                sendMsg();
             }
 
         } catch (UnknownHostException e) {
@@ -78,8 +78,11 @@ public class ClientChat{
 
                 } catch (EOFException ex){
                     log.error("Соединение с сервером потеряно\n", ex);
-                    System.out.println("Всё под контролем :)");
-                    System.exit(1);
+                    try {
+                        dataInputStream.close();
+                    } catch (IOException e) {
+                        log.error("Входной поток не закрыт",e);
+                    }
                 } catch (IOException ex){
                     log.error("Сообщение не может быть прочитано\n", ex);
                 }
@@ -89,7 +92,7 @@ public class ClientChat{
         thread.start();
     }
 
-    private void sendMsg(String line, Calendar calendar) throws IOException {
+    private void sendMsg() throws IOException {
 
         line = scanner.nextLine();
         calendar=Calendar.getInstance();                                //Получаем время отправки

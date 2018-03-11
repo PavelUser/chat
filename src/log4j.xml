@@ -33,12 +33,12 @@
         </layout>
     </appender>
 
-    <logger name="com.company.serverChat" additivity="true">
+    <logger name="com.company.server" additivity="true">
         <level value="info"/>
         <appender-ref ref="ServerChatFileAppender"/>
     </logger>
 
-    <logger name="com.company.clientChat" additivity="true">
+    <logger name="com.company.client" additivity="true">
         <level value="info"/>
         <appender-ref ref="ClientChatFileAppender"/>
     </logger>

@@ -28,6 +28,7 @@ public class ServerChat {
     private DataOutputStream dataOutputStream;
     private ConnectionHandler connectionHandler;
     private DataInputStream dataInputStream;
+    private OutputHandler outputHandler;
 
     public static void main(String[] args){
         ServerChat serverChat=new ServerChat();
@@ -43,7 +44,7 @@ public class ServerChat {
     }
 
     private void showCommands(){
-        System.out.print("Список доступных команд:\n"+"exit\n"+"list\n");
+        System.out.print("Список доступных команд:\n"+"exit\n"+"list");
     }
 
     private boolean isWorking(){
@@ -58,6 +59,7 @@ public class ServerChat {
         try {
             serverSocket=new ServerSocket(PORT);
             showIP();
+            outputHandler=new OutputHandler();
             connectionHandler=new ConnectionHandler();
             showCommands();
             commandHandler();
@@ -130,9 +132,7 @@ public class ServerChat {
                     socket = serverSocket.accept();                                         //Обрабатываем порт на наличие подключений
                     logger.info("Соединение с клиентом установлено\n");
                     clientlist.add(socket);                                                 //Добавляем клиента в список подключенных
-                    InputStreamHandler inputStreamHandler=new InputStreamHandler();         //Создаем по потоку на клиента
-                    OutputHandler outputStreamHandler=new OutputHandler();
-                    inputStreamHandler.addPropertyChangeListener(outputStreamHandler);
+                    new InputStreamHandler();         //Создаем по потоку на клиента
                 } catch (IOException ex) {
                     logger.error(getName(), ex);
                 }
@@ -149,6 +149,7 @@ public class ServerChat {
                     logger.warn(s.getInetAddress().getHostAddress()+": сокет не закрыт",io);
                 }
             }
+            clientlist.clear();
             logger.info("Все сокеты закрыты");
         }
 
@@ -169,6 +170,7 @@ public class ServerChat {
         private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
         InputStreamHandler(){
+            addPropertyChangeListener(outputHandler);
             ip=socket.getInetAddress().getHostAddress();
             setName("inputStreamHandler: "+ip);
             try {
@@ -209,25 +211,20 @@ public class ServerChat {
     private class OutputHandler implements PropertyChangeListener{
         private final Logger logger=Logger.getLogger(OutputHandler.class);
 
-        private String ip;
-
-        public OutputHandler() {
-            ip=socket.getInetAddress().getHostAddress();
-        }
-
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             for (Socket client:clientlist) {
                 try {
                     dataOutputStream=new DataOutputStream(client.getOutputStream());
                     dataOutputStream.writeUTF(msg);
+                    //dataOutputStream.close();                                         //почему чтение бросает ошибку????
                 } catch (IOException io) {
                     logger.error("Сообщение: " + msg + " не отправлено");
                     try {
                         dataOutputStream.close();
                         logger.info("Выходной поток закрыт");
                     } catch (IOException e1) {
-                        logger.error("Выходной поток " + ip + " не закрыт");
+                        logger.error("Выходной поток " + " не закрыт");
                     }
                 }
             }
