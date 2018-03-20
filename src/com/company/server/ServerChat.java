@@ -24,7 +24,6 @@ public class ServerChat {
 
     private ArrayList<Socket> clientlist=new ArrayList<>();
     private ServerSocket serverSocket;
-    private Socket socket;
     private DataOutputStream dataOutputStream;
     private ConnectionHandler connectionHandler;
     private DataInputStream dataInputStream;
@@ -39,12 +38,12 @@ public class ServerChat {
         try {
             log.info("ip address: "+InetAddress.getLocalHost().getHostAddress());
         }catch (UnknownHostException host){
-            log.error("IP сервера не получен", host);
+            log.error("IP не получен", host);
         }
     }
 
     private void showCommands(){
-        System.out.print("Список доступных команд:\n"+"exit\n"+"list");
+        System.out.print("Список доступных команд:\n"+"exit\n"+"list\n"+"count\n");
     }
 
     private boolean isWorking(){
@@ -68,7 +67,6 @@ public class ServerChat {
                 Thread.sleep(1000);
             }
 
-            connectionHandler.setRunning(false);
         }catch (IOException io){
             log.error("I/O exception",io);
         } catch (InterruptedException e) {
@@ -91,20 +89,20 @@ public class ServerChat {
                 do {
                     command=scanner.nextLine().toLowerCase();
                     switch (command){
-                        case "exit": {
-                            running = false;
-                            break;
-                        }
-                        case "list": {
-                            System.out.println("\tСписок клиентов");
-                            for (Socket client:clientlist)
-                                System.out.println(client.getInetAddress());
-                            break;
-                        }
-                        default:{
-                            System.out.println("Список доступных команд:\nexit\nlist");
-                            break;
-                        }
+                        case "exit":
+                                    running = false;
+                                    break;
+                        case "count":
+                                    System.out.println(getCountClient());
+                                    break;
+                        case "list":
+                                    System.out.println("\tСписок клиентов");
+                                    for (Socket client:clientlist)
+                                        System.out.println(client.getInetAddress());
+                                    break;
+                        default:
+                                System.out.println("Список доступных команд:\nexit\nlist\ncount");
+                                break;
                     }
                 } while (running);
 
@@ -116,8 +114,6 @@ public class ServerChat {
     private class ConnectionHandler extends Thread {
         final private Logger logger=Logger.getLogger(ConnectionHandler.class);
 
-        private boolean running=true;
-
         ConnectionHandler(){
             super("ConnectionHandler");
             setDaemon(true);
@@ -127,18 +123,16 @@ public class ServerChat {
         @Override
         public void run(){
             log.info("Поток "+getName()+ " Запущен");
-            while (isRunning()) {                                                           //не нравится выход из цикла нужно ждать подключения
+            while (true) {                                                           //не нравится выход из цикла нужно ждать подключения
                 try {
-                    socket = serverSocket.accept();                                         //Обрабатываем порт на наличие подключений
+                    Socket socket = serverSocket.accept();                                         //Обрабатываем порт на наличие подключений
                     logger.info("Соединение с клиентом установлено\n");
                     clientlist.add(socket);                                                 //Добавляем клиента в список подключенных
-                    new InputStreamHandler();         //Создаем по потоку на клиента
+                    new InputStreamHandler(socket);         //Создаем по потоку на клиента
                 } catch (IOException ex) {
                     logger.error(getName(), ex);
                 }
             }
-            closeAllSocket();
-            logger.info("Остановлен поток: " + getName());
         }
 
         void closeAllSocket(){
@@ -153,32 +147,27 @@ public class ServerChat {
             logger.info("Все сокеты закрыты");
         }
 
-        private boolean isRunning(){
-            return running;
-        }
-
-        void setRunning(boolean running){
-            this.running=running;
-        }
-
     }
 
     private class InputStreamHandler extends Thread{
         private Logger logger=Logger.getLogger(InputStreamHandler.class);
 
+        private boolean working=true;
+        private Socket socket;
         private String ip;
         private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
-        InputStreamHandler(){
+        InputStreamHandler(Socket socket){
             addPropertyChangeListener(outputHandler);
-            ip=socket.getInetAddress().getHostAddress();
+            this.socket=socket;
+            ip=this.socket.getInetAddress().getHostAddress();
             setName("inputStreamHandler: "+ip);
             try {
-                dataInputStream=new DataInputStream(socket.getInputStream());
+                dataInputStream=new DataInputStream(this.socket.getInputStream());
             } catch (IOException e) {
                 logger.error(getName(), e);
             }
-            setDaemon(false);
+            setDaemon(true);
             start();
         }
 
@@ -190,11 +179,27 @@ public class ServerChat {
         public void run() {
             logger.info("Поток "+getName()+" запущен");
             try {
-                while (true) {                                                   //Подумать как организовать цикл
+                while (isWorking()) {                                                   //Подумать как организовать цикл
                     logger.info("Принимаем сообщение");
-                    msg = dataInputStream.readUTF();                            //Принимаем сообщение
-                    logger.info("Принято сообщение: " + msg);
-                    propertyChangeSupport.firePropertyChange("msg", null, msg);
+                    msg = dataInputStream.readUTF();
+
+                    switch(msg.toLowerCase()){
+                        case "exit":
+                                    clientlist.remove(socket);
+                                    logger.info("Клиент отключился "+ip);
+                                    try {
+                                        socket.close();
+                                        dataInputStream.close();
+                                    }catch (IOException io) {
+                                        logger.warn("Входной поток " + ip + " не закрыт");
+                                    }
+                                    setWorking(false);
+                                    break;
+                        default:
+                                logger.info("Принято сообщение: " + msg);
+                                propertyChangeSupport.firePropertyChange("msg", null, msg);
+                                break;
+                    }
                 }
             } catch (IOException e) {
                 logger.warn(getName()+" сообщение не принято",e);
@@ -202,9 +207,16 @@ public class ServerChat {
                     dataInputStream.close();
                     logger.info("Входный поток закрыт");
                 } catch (IOException e1) {
-                    logger.error("Входной поток "+ip+" не закрыт");
+                    logger.warn("Входной поток " + ip + " не закрыт");
                 }
             }
+        }
+
+        private boolean isWorking(){
+            return working;
+        }
+        private void setWorking(boolean bool){
+            working=bool;
         }
     }
 
@@ -232,4 +244,7 @@ public class ServerChat {
         }
     }
 
+    private int getCountClient(){
+        return clientlist.size();
+    }
 }

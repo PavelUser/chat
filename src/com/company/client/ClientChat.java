@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.Scanner;
 
 public class ClientChat{
-    static final Logger log=Logger.getLogger(ClientChat.class);
+    private static final Logger log=Logger.getLogger(ClientChat.class);
 
     private final int port = 2000;
     private boolean working=true;
@@ -20,8 +20,6 @@ public class ClientChat{
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
     private Scanner scanner=new Scanner(System.in);
-    private String line=null;
-    private Calendar calendar=null;
 
     public static void main(String args[]) {
 
@@ -34,17 +32,17 @@ public class ClientChat{
             log.info("Соединение с сервером установлено"
                     +"\nВведите сообщение");
             initDataStream(socket);
-            inputMsgHandler(dataInputStream);
+            receiveMsg(dataInputStream);
 
-            while (true) {
-                sendMsg();
+            while (working) {
+                textHandler();
             }
 
         } catch (UnknownHostException e) {
             log.error("IP не установлен: ", e);
-        } catch (IOException e) {
-            log.error("Ошибка I/O: ", e);
-        }
+		} catch (IOException e) {
+			log.error("Ошибка I/O: ", e);
+		}
     }
 
     private String enterIP(){
@@ -56,7 +54,7 @@ public class ClientChat{
         dataInputStream = new DataInputStream(socket.getInputStream());
     }
 
-    private void inputMsgHandler(DataInputStream dataInputStream){
+    private void receiveMsg(DataInputStream dataInputStream){
 
         Thread thread=new Thread(){                                         //Поток обработки входящего сообщения
             private String line;
@@ -92,14 +90,40 @@ public class ClientChat{
         thread.start();
     }
 
-    private void sendMsg() throws IOException {
-
-        line = scanner.nextLine();
-        calendar=Calendar.getInstance();                                //Получаем время отправки
-        dataOutputStream.writeUTF(line);                                //передача сообщения серверу
+    private void sendMsg(String string) throws IOException {
+        Calendar calendar=Calendar.getInstance();                         //Получаем время отправки
+        dataOutputStream.writeUTF(string);                                //передача сообщения серверу
 
         System.out.printf("\t\t%tT \n%s", calendar,
-                "Отправлена строка: " + line);
+                "Отправлена строка: " + string);
     }
 
+    private void textHandler() throws IOException{
+		String line = scanner.nextLine();
+
+    	switch (line.toLowerCase()){
+			case "exit":
+						sendMsg(line);
+						exit();
+						break;
+			default:
+					sendMsg(line);
+					break;
+		}
+	}
+
+	private void exit(){
+    	try {
+			dataInputStream.close();
+			dataOutputStream.close();
+		}catch (IOException io){
+    		log.warn(io);
+		}
+
+    	inverseWorking();
+	}
+
+	private void inverseWorking(){
+    	working=!working;
+	}
 }
