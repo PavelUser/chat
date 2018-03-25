@@ -24,9 +24,7 @@ public class ServerChat {
 
     private ArrayList<Socket> clientlist=new ArrayList<>();
     private ServerSocket serverSocket;
-    private DataOutputStream dataOutputStream;
     private ConnectionHandler connectionHandler;
-    private DataInputStream dataInputStream;
     private OutputHandler outputHandler;
 
     public static void main(String[] args){
@@ -50,13 +48,13 @@ public class ServerChat {
         return working;
     }
 
-    private void setWorking(boolean working){
-        this.working=working;
+    private void inverseWorking(){
+        working=!working;
     }
 
     private void startWork() {
         try {
-            serverSocket=new ServerSocket(PORT);
+            serverSocket=new ServerSocket(PORT,20);
             showIP();
             outputHandler=new OutputHandler();
             connectionHandler=new ConnectionHandler();
@@ -106,7 +104,7 @@ public class ServerChat {
                     }
                 } while (running);
 
-                setWorking(false);
+                inverseWorking();
             }
         }.start();
     }
@@ -154,6 +152,7 @@ public class ServerChat {
 
         private boolean working=true;
         private Socket socket;
+        private DataInputStream dataInputStream;
         private String ip;
         private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -223,13 +222,15 @@ public class ServerChat {
     private class OutputHandler implements PropertyChangeListener{
         private final Logger logger=Logger.getLogger(OutputHandler.class);
 
+        private DataOutputStream dataOutputStream;
+
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             for (Socket client:clientlist) {
                 try {
                     dataOutputStream=new DataOutputStream(client.getOutputStream());
                     dataOutputStream.writeUTF(msg);
-                    //dataOutputStream.close();                                         //почему чтение бросает ошибку????
+                    dataOutputStream.close();                                         //почему бросает ошибку????
                 } catch (IOException io) {
                     logger.error("Сообщение: " + msg + " не отправлено");
                     try {
