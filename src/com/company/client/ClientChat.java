@@ -62,10 +62,9 @@ public class ClientChat{
 
             @Override
             public void run() {
-
                 try {
 
-                    while (working){
+                	while (working){
                         line = dataInputStream.readUTF();                   //прием сообщения от сервера
 
                         calendar=Calendar.getInstance();                        //Получаем время доставки

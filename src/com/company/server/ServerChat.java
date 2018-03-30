@@ -88,19 +88,19 @@ public class ServerChat {
                     command=scanner.nextLine().toLowerCase();
                     switch (command){
                         case "exit":
-                                    running = false;
-                                    break;
+                            running = false;
+                            break;
                         case "count":
-                                    System.out.println(getCountClient());
-                                    break;
+                            System.out.println(getCountClient());
+                            break;
                         case "list":
-                                    System.out.println("\tСписок клиентов");
-                                    for (Socket client:clientlist)
-                                        System.out.println(client.getInetAddress());
-                                    break;
+                            System.out.println("\tСписок клиентов");
+                            for (Socket client:clientlist)
+                                System.out.println(client.getInetAddress());
+                            break;
                         default:
-                                System.out.println("Список доступных команд:\nexit\nlist\ncount");
-                                break;
+                            System.out.println("Список доступных команд:\nexit\nlist\ncount");
+                            break;
                     }
                 } while (running);
 
@@ -184,20 +184,20 @@ public class ServerChat {
 
                     switch(msg.toLowerCase()){
                         case "exit":
-                                    clientlist.remove(socket);
-                                    logger.info("Клиент отключился "+ip);
-                                    try {
-                                        socket.close();
-                                        dataInputStream.close();
-                                    }catch (IOException io) {
-                                        logger.warn("Входной поток " + ip + " не закрыт");
-                                    }
-                                    setWorking(false);
-                                    break;
+                            clientlist.remove(socket);
+                            logger.info("Клиент отключился "+ip);
+                            try {
+                                socket.close();
+                                dataInputStream.close();
+                            }catch (IOException io) {
+                                logger.warn("Входной поток " + ip + " не закрыт");
+                            }
+                            setWorking(false);
+                            break;
                         default:
-                                logger.info("Принято сообщение: " + msg);
-                                propertyChangeSupport.firePropertyChange("msg", null, msg);
-                                break;
+                            logger.info("Принято сообщение: " + msg);
+                            propertyChangeSupport.firePropertyChange("msg", null, msg);
+                            break;
                     }
                 }
             } catch (IOException e) {
@@ -230,7 +230,7 @@ public class ServerChat {
                 try {
                     dataOutputStream=new DataOutputStream(client.getOutputStream());
                     dataOutputStream.writeUTF(msg);
-                    dataOutputStream.close();                                         //почему бросает ошибку????
+                    //dataOutputStream.close();                                         //почему бросает ошибку????
                 } catch (IOException io) {
                     logger.error("Сообщение: " + msg + " не отправлено");
                     try {
