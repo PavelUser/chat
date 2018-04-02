@@ -29,11 +29,19 @@
         <param name="File" value="clientChat.log"/>
         <param name="append" value="false" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t]%c: %m%n"/>
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c: %m%n"/>
         </layout>
     </appender>
 
-    <logger name="com.company.server" additivity="true">
+    <appender name="ClientChatGUIFileAppender" class="org.apache.log4j.FileAppender">
+        <param name="File" value="GUI.log"/>
+        <param name="append" value="false" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c: %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="com.company.ui" additivity="true">
         <level value="info"/>
         <appender-ref ref="ServerChatFileAppender"/>
     </logger>
@@ -41,6 +49,11 @@
     <logger name="com.company.client" additivity="true">
         <level value="info"/>
         <appender-ref ref="ClientChatFileAppender"/>
+    </logger>
+
+    <logger name="com.company.server" additivity="true">
+        <level value="info"/>
+        <appender-ref ref="ServerChatFileAppender"/>
     </logger>
 
     <root>
