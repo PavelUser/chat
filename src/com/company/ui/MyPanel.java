@@ -1,22 +1,30 @@
 package com.company.ui;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-class MyPanel extends JPanel {               //не нравятся углы панели. Почему они острые и выходят за Border?
+import static java.awt.event.KeyEvent.VK_ENTER;
+
+class MyPanel extends JPanel {
 
 	MyPanel(int x,int y){
-		setLayout(null);
-		setBackground(Color.PINK);
-		setBounds(x,y,437,569);
-		setBorder(BorderFactory.createCompoundBorder(            //увеличить радиус по углам
-				new LineBorder(Color.GRAY, 1,true),
-				BorderFactory.createEmptyBorder(200,200,200,200)));
+		setSettings(x,y);
+		//*********************************************************************************
+				//Сделать отдельную панель
+		addMyComponents();
+	}
 
+	private void setSettings(int x,int y){
+		setLayout(null);
+		setBackground(Color.GRAY);
+		setBounds(x,y,437,569);
+	}
+
+	private void addMyComponents(){
 		//*************************************TEMP****************************************
 		String columns[]={"ID","Name"}, rows[][]={{"1","aaaaaaaaa"},
 				{"2","bbbbbbbbb"},
@@ -24,29 +32,40 @@ class MyPanel extends JPanel {               //не нравятся углы п
 				{"4","ddddddddd"}};
 		add(new MyTable(1,1,305,495,columns,rows));       //306, 499
 		//*************************************TEMP****************************************                                                         //(306,1,130,499));
+		MyTextArea textArea=new MyTextArea(0,0,305,72);
+		JScrollPane scrollPane = new JScrollPane(textArea);
+		scrollPane.setLocation(1,496);
 
-		add(new MyTextArea(1,496,305,72));   //306, 568
+		//add(new MyTextArea(1,496,305,72));   //306, 568
+		add(scrollPane);
 		add(new MyButton(306,496,130,72));   //436, 568
 	}
 
 	private class MyTextArea extends JTextArea{
+		KeyStroke ENTER_KEY = KeyStroke.getKeyStroke(VK_ENTER, 0);
+
 		MyTextArea(int x,int y,int width,int height){
-			setBounds(x,y,width,height);
-			setLineWrap(true);
-			setWrapStyleWord(true);
-			setAutoscrolls(true);
+			setSettings(x,y,width,height);
+
+			getInputMap(JComponent.WHEN_FOCUSED).put(ENTER_KEY, "none");
 
 			addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyPressed(KeyEvent e) {
-					if (e.getKeyCode()==KeyEvent.VK_ENTER)
+					if (e.getKeyCode()==VK_ENTER)
 					{
 						System.out.println("Сделать функцию для отправки");
 						setText("");
-						setRows(0);
 					}
 				}
 			});
+		}
+
+		private void setSettings(int x,int y,int width,int height){
+			setBounds(x,y,width,height);
+			setLineWrap(true);
+			setWrapStyleWord(true);
+			setAutoscrolls(true);
 		}
 
 	}            //доделать
@@ -70,6 +89,9 @@ class MyPanel extends JPanel {               //не нравятся углы п
 			setBackground(Color.DARK_GRAY);
 			setGridColor(Color.WHITE);
 			setFont(new Font("Times New Roman",Font.PLAIN,14));
+			setBorder(BorderFactory.createCompoundBorder(
+					BorderFactory.createBevelBorder(BevelBorder.LOWERED),
+					BorderFactory.createEmptyBorder(100, 100, 100, 100)));		//что за цифры?
 		}
 
 	}                  //разобраться как использовать

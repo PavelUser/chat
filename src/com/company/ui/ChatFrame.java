@@ -7,6 +7,7 @@ public class ChatFrame extends JFrame {
     public ChatFrame() throws HeadlessException {
         super();
         setTitle("Chat");
+        setIconImage(Toolkit.getDefaultToolkit().getImage("E:\\Android\\TCP@IP\\src\\com\\company\\ui\\mail2.png"));
         setSize(new Dimension(600, 400));
         ChatView chatView  = new ChatView();
         setContentPane(chatView);

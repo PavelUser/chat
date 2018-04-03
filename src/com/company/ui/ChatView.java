@@ -2,6 +2,9 @@ package com.company.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ChatView extends JPanel {
 
@@ -50,9 +53,27 @@ public class ChatView extends JPanel {
 
             JPanel sendPanel  =new JPanel(new BorderLayout());
             sendPanel.setPreferredSize(new Dimension(0, 80));
+
             sendButton = new JButton("Send");
             sendButton.setPreferredSize(new Dimension(80, 0));
+            sendButton.addActionListener((ActionEvent ae)->{
+				System.out.println("Сделать функцию для отправки");
+				sendField.setText(null);
+			});
+
             sendField = new JTextArea();
+            sendField.setLineWrap(true);
+            sendField.setWrapStyleWord(true);
+            sendField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),"none");
+            sendField.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					if(e.getKeyCode()==KeyEvent.VK_ENTER){
+						System.out.println("Сделать функцию для отправки");
+						sendField.setText(null);
+					}
+				}
+			});
 
             sendPanel.add(sendButton, BorderLayout.EAST);
             sendPanel.add(new JScrollPane(sendField), BorderLayout.CENTER);

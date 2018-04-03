@@ -4,15 +4,14 @@ import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import static java.awt.event.KeyEvent.VK_ENTER;
 
 public class TextAreaFrame extends JFrame {
     KeyStroke ENTER_KEY = KeyStroke.getKeyStroke(VK_ENTER, 0);
-
-    public static void replaceOnEmptyAction(JComponent component, KeyStroke keyStroke) {
-        component.getInputMap(JComponent.WHEN_FOCUSED).put(keyStroke, "none");
-    }
 
     public TextAreaFrame(){
         super();
@@ -30,6 +29,7 @@ public class TextAreaFrame extends JFrame {
             так можно убрать обработчик на любую клавишу (в нашем случае на enter )
         */
         textArea.getInputMap(JComponent.WHEN_FOCUSED).put(ENTER_KEY, "none");
+
     }
 
     public static void main(String[] args){

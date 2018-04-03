@@ -10,7 +10,6 @@ public class MyFrame extends JFrame {
       setTitle("Chat");
       setSize(width,height);
       setLocationRelativeTo(null);
-      setBackground(Color.GRAY);
       setLayout(null);
       setResizable(false);
       setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -26,8 +25,9 @@ public class MyFrame extends JFrame {
          }
       });
       //*********************************************
-
-      add(new MyPanel(5,5));
+      MyPanel panel=new MyPanel(5,5);
+      add(panel);
+      setContentPane(panel);
 
       setVisible(true);
    }
