@@ -4,9 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public final class UIUtils {
-    private UIUtils() {
-
-    }
 
     public static void centerScreen(JFrame frame) {
         Dimension dim = frame.getToolkit().getScreenSize();

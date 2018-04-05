@@ -2,6 +2,8 @@ package com.company.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class ChatFrame extends JFrame {
     public ChatFrame() throws HeadlessException {
@@ -16,6 +18,12 @@ public class ChatFrame extends JFrame {
     public static void main(String[] args) {
         ChatFrame frame = new ChatFrame();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("Реализовать отключение от сервера");
+            }
+        });
         UIUtils.centerScreen(frame);
         frame.setVisible(true);
     }
